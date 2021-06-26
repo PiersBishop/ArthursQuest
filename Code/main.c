@@ -2,9 +2,12 @@
 #include <stdint.h>
 //#include <stdio.h> //to use printf function (unused here)
 
-#include "../Plugins/gbt_player.h"
+//#include "../Plugins/gbt_player.h"
 // music data
-extern const unsigned char * themeSong[];
+//extern const unsigned char * themeSong[];
+#include "../Plugins/hUGEDriver.h"
+extern const hUGESong_t intro_music;
+extern const hUGESong_t main_music;
 
 // bank tile data
 // title stuff
@@ -334,9 +337,11 @@ void hideText(){
 }
 void displayandAPressText(uint8_t t){
 	//canMusic = 0;
-	SWITCH_RAM_MBC1(0);
+	SWITCH_ROM_MBC1(3);
 	displayText(t);
+	SWITCH_ROM_MBC1(0);
 	//canMusic = 1;
+	waitpadup();
 	waitpad(J_A);
 	hideText();
 	performantDelay(20);
@@ -348,11 +353,11 @@ void getDirInput(){
 	dy = (joy == J_UP) ? -1 : (joy == J_DOWN) ? 1 : 0;
 }
 
-uint8_t downSpriteOffsets[] = {1,1,0,0};
-uint8_t upSpriteOffsets[] = {1,1,0,0};
-uint8_t sideSpriteOffsets[] = {0,1,1,0};
+const uint8_t downSpriteOffsets[] = {1,1,0,0};
+const uint8_t upSpriteOffsets[] = {1,1,0,0};
+const uint8_t sideSpriteOffsets[] = {0,1,1,0};
 
-uint8_t warpCoords[] = 
+const uint8_t warpCoords[] = 
 {
 	13,12, // percival
 	19,16, // leondegrance
@@ -364,7 +369,7 @@ uint8_t warpCoords[] =
 	13, 3  // mordred
 };
 
-uint8_t mapSequence[] = {
+const uint8_t mapSequence[] = {
 	4,3,4,4,4,4,3,4
 };
 
@@ -523,10 +528,13 @@ void animateSprites(){
 	}
 }
 
-void music(){
-	//if (canMusic == 1){
-		gbt_update();
-	//}
+void music() {
+    static uint8_t bank_save; 
+    bank_save = _current_bank;
+    //gbt_update();
+	SWITCH_ROM_MBC1(2);
+	hUGE_dosound();
+    SWITCH_ROM_MBC1(bank_save); 
 }
 
 void timerBeep(){
@@ -535,7 +543,6 @@ void timerBeep(){
 	if (tim_cnt == 5){
 		fastFrame = (fastFrame+1)%4;
 		if (fastFrame%2 == 0){
-		music();
 			frame = (frame+1)%4;
 			if (frame%2 == 0){
 				slowFrame = (slowFrame+1)%4;
@@ -544,39 +551,39 @@ void timerBeep(){
 		animateSprites();
 		tim_cnt=0;
 	}
+		music();
 }
 
 // main
 void main(void)
 {
-	//disable_interrupts();
-	
 	// setup for bank usage
 	ENABLE_RAM_MBC1;
 	SWITCH_4_32_MODE_MBC1;
 	
-	
 	// setup music
-	gbt_play(themeSong, 2,3); // track, bank, 1/speed
-	gbt_loop(0); // should loop
-	
+	NR52_REG = 0x80;
+	NR51_REG = 0xFF;
+	NR50_REG = 0x77;
+	SWITCH_ROM_MBC1(2);
+	hUGE_init(&intro_music);
+	SWITCH_ROM_MBC1(0);
+		
 	// setup timer interrupt
 	CRITICAL{
 		tim_cnt = 0;
 		add_VBL(timerBeep);
-		//add_TIM(music);
 	}
 	TMA_REG = 0x00U;
     TAC_REG = 0x04U;
-	set_interrupts(VBL_IFLAG);//|TIM_IFLAG);
-	
-	enable_interrupts();
-	//canMusic = 1;
+	set_interrupts(VBL_IFLAG);
 	
     // Loop forever
     while(1) {
 		// preload window stuff
+		SWITCH_ROM_MBC1(3);
 		set_win_data(206,47,Windows_Tiles);
+		SWITCH_ROM_MBC1(0);
 		move_win(7,144);
 		SHOW_WIN;
 		
@@ -594,12 +601,15 @@ void main(void)
 		// fade to black
 		fadeToBlack();
 		
+		SWITCH_ROM_MBC1(2);
+		hUGE_init(&main_music);
+		SWITCH_ROM_MBC1(0);
+		
 		// some more setup
 		allSpritesOffScreen();
 		//canMusic = 0;
 		SWITCH_RAM_MBC1(0);
-		set_sprite_data(0,68u,CharaSprites); // setup chara sprites in ram since they'll be used for the rest of the game
-		//canMusic = 1;
+		set_sprite_data(0,68u,CharaSprites); // setup chara sprites in vram since they'll be used for the rest of the game
 		q = 0; // set quest to display intro text
 		
 		// load camelot map and sprites
@@ -647,5 +657,9 @@ void main(void)
 			if (q==9)displayandAPressText(c*2+6);
 			fadeToWhite();
 		}
+		
+		SWITCH_ROM_MBC1(2);
+		hUGE_init(&intro_music);
+		SWITCH_ROM_MBC1(0);
     }
 }

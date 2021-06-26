@@ -8,11 +8,6 @@
 // character sprites
 #include "../Resources/CharaSprites.c"
 
-// text boxes
-#include "../Resources/Windows_Text.c"
-// text tiles
-#include "../Resources/Windows_Tiles.c"
-
 
 // castle maps
 #include "../Resources/Castle0_Map.c"

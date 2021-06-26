@@ -8,6 +8,11 @@
 #include "../Resources/Title_Tiles.c"
 #include "../Resources/Title_TextTiles.c"
 
+// text boxes
+#include "../Resources/Windows_Text.c"
+// text tiles
+#include "../Resources/Windows_Tiles.c"
+
 void titleScreenAnim() BANKED 
 {
 	// start full white
