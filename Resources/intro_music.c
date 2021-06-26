@@ -4,7 +4,7 @@
 static const unsigned char iorder_cnt = 2;
 
 static const unsigned char iP0[] = {
-    DN(___,0,0x000),
+    DN(___,0,0xE00),
     DN(___,0,0x000),
     DN(___,0,0x000),
     DN(___,0,0x000),
@@ -70,7 +70,7 @@ static const unsigned char iP0[] = {
     DN(___,0,0x000),
 };
 static const unsigned char iP1[] = {
-    DN(___,0,0x000),
+    DN(___,0,0xE00),
     DN(___,0,0x000),
     DN(___,0,0x000),
     DN(___,0,0x000),
