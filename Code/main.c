@@ -4,9 +4,7 @@
 
 #include "../Plugins/gbt_player.h"
 // music data
-extern const unsigned char * song_Data[];
-/*extern const unsigned char ArthursQuestIntro[];
-extern const unsigned char ArthursQuestTheme[];*/
+extern const unsigned char * themeSong[];
 
 // bank tile data
 // title stuff
@@ -72,6 +70,7 @@ unsigned int tim_cnt;
 uint8_t fastFrame;
 uint8_t frame;
 uint8_t slowFrame;
+//uint8_t //canMusic;
 
 
 
@@ -256,121 +255,68 @@ void camelotSprites(){
 
 // tiles loading
 void loadCastleTiles(){
+	//canMusic = 0;
+	SWITCH_RAM_MBC1(0);
 	set_bkg_data(0, 74u, Castle_Tiles);
 }
 void loadTownTiles(){
+	//canMusic = 0;
+	SWITCH_RAM_MBC1(0);
 	set_bkg_data(0, 35u, Town_Tiles);
 }
 
 // map loading 
 void loadMapCamelot(){ // castle camelot
-	SWITCH_RAM_MBC1(0);
 	loadCastleTiles();
 	set_bkg_tiles(0, 0, 20u,18u, Castle0_Map );
-}
-
-void loadMapKnight1(){ // percival's cottage
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Cottage_Map );
-}
-
-void loadMapKnight2(){ // leondegrance's castle
-	SWITCH_RAM_MBC1(0);
-	loadCastleTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Castle1_Map );
-}
-
-void loadMapKnight3(){ // lancelot's camp
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Camp0_Map );
-}
-
-void loadMapKnight4(){ // gawain's brothel
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Brothel_Map );
-}
-
-void loadMapKnight5(){ // tristan's camp
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Camp1_Map );
-}
-
-void loadMapKnight6(){ // caradoc's camp
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Camp2_Map );
-}
-
-void loadMapKnight7(){ // galahad's castle
-	SWITCH_RAM_MBC1(0);
-	loadCastleTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Castle2_Map );
-}
-
-void loadMapKnight8(){ // mordred's camp
-	SWITCH_RAM_MBC1(0);
-	loadTownTiles();
-	set_bkg_tiles(0, 0, 20u,18u, Camp3_Map );
+	//canMusic = 1;
 }
 
 void loadMapKnight(){ // all knights
 	switch(q){
 		case 1:
-		loadMapKnight1();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Cottage_Map );
 		break;
 		case 2:
-		loadMapKnight2();
+		loadCastleTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Castle1_Map );
 		break;
 		case 3:
-		loadMapKnight3();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Camp0_Map );;
 		break;
 		case 4:
-		loadMapKnight4();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Brothel_Map );
 		break;
 		case 5:
-		loadMapKnight5();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Camp1_Map );
 		break;
 		case 6:
-		loadMapKnight6();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Camp2_Map );
 		break;
 		case 7:
-		loadMapKnight7();
+		loadCastleTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Castle2_Map );
 		break;
 		case 8:
-		loadMapKnight8();
+		loadTownTiles();
+		set_bkg_tiles(0, 0, 20u,18u, Camp3_Map );
 		break;
 	}
+	//canMusic = 1;
 }
-
-
-// world maps
-/*void loadMapBritain(){ // world map 1, bank 1
-	allSpritesOffScreen();
-	set_bkg_data(0, 64u, World_Tiles);
-	SWITCH_RAM_MBC1(1);
-	// no bg loading here, since it'll have to be updated each step
-}
-void segmentMapBritain(){
-	// base it off of xy coords
-	set_bkg_submap();
-}*/
-
-/*void loadMapIreland(){ // world map 2, bank 2
-	allSpritesOffScreen();
-	set_bkg_data(0, 64u, World_Tiles);
-	SWITCH_RAM_MBC1(2);
-	// no bg loading here, since it'll have to be updated each step
-}*/
 
 void loadMapWorld(){
 	allSpritesOffScreen();
-	set_bkg_data(0, 64u, World_Tiles);
+	//canMusic = 0;
 	SWITCH_RAM_MBC1(1);
+	set_bkg_data(0, 64u, World_Tiles);
 	set_bkg_tiles(0,0,20,18,World_Map_Small);
+	//canMusic = 1;
 }
 
 // text windows
@@ -387,7 +333,10 @@ void hideText(){
 	move_win(7,144);
 }
 void displayandAPressText(uint8_t t){
+	//canMusic = 0;
+	SWITCH_RAM_MBC1(0);
 	displayText(t);
+	//canMusic = 1;
 	waitpad(J_A);
 	hideText();
 	performantDelay(20);
@@ -441,6 +390,8 @@ void worldMapSection(){
 	
 	while (ua==q){
 		getDirInput();
+		//canMusic = 0;
+		SWITCH_RAM_MBC1(1);
 		if (dy==1 && y!=18){
 			set_sprite_prop(2,0x00);
 			set_sprite_prop(3,0x00);
@@ -526,6 +477,7 @@ void worldMapSection(){
 		}
 		move_sprite(2,x*8,y*8-3);
 		move_sprite(3,x*8+8,y*8-3);
+		//canMusic = 1;
 		
 		if (checkWarp()==1){
 			fadeToWhite();
@@ -571,12 +523,19 @@ void animateSprites(){
 	}
 }
 
+void music(){
+	//if (canMusic == 1){
+		gbt_update();
+	//}
+}
+
 void timerBeep(){
-	gbt_update();
+	
 	tim_cnt++;
 	if (tim_cnt == 5){
 		fastFrame = (fastFrame+1)%4;
 		if (fastFrame%2 == 0){
+		music();
 			frame = (frame+1)%4;
 			if (frame%2 == 0){
 				slowFrame = (slowFrame+1)%4;
@@ -596,21 +555,29 @@ void main(void)
 	ENABLE_RAM_MBC1;
 	SWITCH_4_32_MODE_MBC1;
 	
+	
+	// setup music
+	gbt_play(themeSong, 2,3); // track, bank, 1/speed
+	gbt_loop(0); // should loop
+	
 	// setup timer interrupt
 	CRITICAL{
 		tim_cnt = 0;
 		add_VBL(timerBeep);
+		//add_TIM(music);
 	}
 	TMA_REG = 0x00U;
     TAC_REG = 0x04U;
-	set_interrupts(VBL_IFLAG);
+	set_interrupts(VBL_IFLAG);//|TIM_IFLAG);
 	
-	// setup music
-	gbt_play(song_Data, 2, 7); // track, bank, speed
-	gbt_loop(1); // should loop
 	enable_interrupts();
+	//canMusic = 1;
+	/*while(1){
+		gbt_update();
+		wait_vbl_done();
+	}*/
 	
-    // Loop forever (unused for now, left here to avoid issues)
+    // Loop forever
     while(1) {
 		// preload window stuff
 		set_win_data(206,47,Windows_Tiles);
@@ -633,8 +600,10 @@ void main(void)
 		
 		// some more setup
 		allSpritesOffScreen();
+		//canMusic = 0;
 		SWITCH_RAM_MBC1(0);
 		set_sprite_data(0,68u,CharaSprites); // setup chara sprites in ram since they'll be used for the rest of the game
+		//canMusic = 1;
 		q = 0; // set quest to display intro text
 		
 		// load camelot map and sprites
@@ -682,130 +651,5 @@ void main(void)
 			if (q==9)displayandAPressText(c*2+6);
 			fadeToWhite();
 		}
-		
-		/*loadMapKnight1();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(4);
-		fadeToWhite(); // or black ?
-		q=2;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(5);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight2();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(6);
-		fadeToWhite(); // or black ?
-		q=3;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(7);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight3();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(8);
-		fadeToWhite(); // or black ?
-		q=4;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(9);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight4();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(10);
-		fadeToWhite(); // or black ?
-		q=5;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(11);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight5();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(12);
-		fadeToWhite(); // or black ?
-		q=6;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(13);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight6();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(14);
-		fadeToWhite(); // or black ?
-		q=7;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(15);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight7();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(16);
-		fadeToWhite(); // or black ?
-		q=8;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(17);
-		fadeToWhite();
-		// map part goes here
-		
-		loadMapWorld();
-		worldMapSection();
-		
-		loadMapKnight8();
-		storyMapSprites();
-		fadeFromWhite();
-		displayandAPressText(18);
-		fadeToWhite(); // or black ?
-		q=9;
-		loadMapCamelot();
-		camelotSprites();
-		fadeFromWhite();
-		displayandAPressText(19);
-		displayandAPressText(20);
-		fadeToWhite();*/
     }
 }
