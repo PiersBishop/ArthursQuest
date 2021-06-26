@@ -572,10 +572,6 @@ void main(void)
 	
 	enable_interrupts();
 	//canMusic = 1;
-	/*while(1){
-		gbt_update();
-		wait_vbl_done();
-	}*/
 	
     // Loop forever
     while(1) {
