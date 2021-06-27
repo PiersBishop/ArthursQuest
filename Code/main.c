@@ -259,12 +259,12 @@ void camelotSprites(){
 // tiles loading
 void loadCastleTiles(){
 	//canMusic = 0;
-	SWITCH_RAM_MBC1(0);
+	SWITCH_ROM_MBC1(0);
 	set_bkg_data(0, 74u, Castle_Tiles);
 }
 void loadTownTiles(){
 	//canMusic = 0;
-	SWITCH_RAM_MBC1(0);
+	SWITCH_ROM_MBC1(0);
 	set_bkg_data(0, 35u, Town_Tiles);
 }
 
@@ -316,7 +316,7 @@ void loadMapKnight(){ // all knights
 void loadMapWorld(){
 	allSpritesOffScreen();
 	//canMusic = 0;
-	SWITCH_RAM_MBC1(1);
+	SWITCH_ROM_MBC1(1);
 	set_bkg_data(0, 64u, World_Tiles);
 	set_bkg_tiles(0,0,20,18,World_Map_Small);
 	//canMusic = 1;
@@ -396,7 +396,7 @@ void worldMapSection(){
 	while (ua==q){
 		getDirInput();
 		//canMusic = 0;
-		SWITCH_RAM_MBC1(1);
+		SWITCH_ROM_MBC1(1);
 		if (dy==1 && y!=18){
 			set_sprite_prop(2,0x00);
 			set_sprite_prop(3,0x00);
@@ -608,7 +608,7 @@ void main(void)
 		// some more setup
 		allSpritesOffScreen();
 		//canMusic = 0;
-		SWITCH_RAM_MBC1(0);
+		SWITCH_ROM_MBC1(0);
 		set_sprite_data(0,68u,CharaSprites); // setup chara sprites in vram since they'll be used for the rest of the game
 		q = 0; // set quest to display intro text
 		
